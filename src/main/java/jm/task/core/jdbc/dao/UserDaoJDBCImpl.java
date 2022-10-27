@@ -9,37 +9,37 @@ import java.util.List;
 
 
 public class UserDaoJDBCImpl implements UserDao {
-    Connection connection = Util.getConnection();
+    Connection connection = Util.getInstance().getConnection();
 
     public UserDaoJDBCImpl() {
     }
 
-    public void createUsersTable() {
+    public void createUsersTable() throws SQLException {
         try {
             Statement statement = connection.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS user (id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), lastName VARCHAR(45), age TINYINT)";
             statement.executeUpdate(sql);
-            System.out.println("Таблица users успешно создана!");
-        } catch (SQLException e) {
-            System.err.println("При создании таблицы произошла ошибка!!!");
-            e.printStackTrace();
+            connection.commit();
+        } catch (SQLException var1) {
+            connection.rollback();
+            throw new RuntimeException(var1);
         }
     }
 
-    public void dropUsersTable() {
+    public void dropUsersTable() throws SQLException {
 
         try {
             Statement statement = connection.createStatement();
             String sql = "DROP TABLE IF EXISTS user";
             statement.execute(sql);
-            System.out.println("Таблица успешно удалена!");
-        } catch (SQLException e) {
-            System.err.println("При удалении таблицы произошла ошибка!");
-            e.printStackTrace();
+            connection.commit();
+        } catch (SQLException var2) {
+            connection.rollback();
+            throw new RuntimeException(var2);
         }
     }
 
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
         String sql = "INSERT INTO user (name, lastName, age) VALUES(?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -48,24 +48,27 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
             System.out.println("User с именем " + name + "успешно добавлен в таблицу");
-        } catch (SQLException e) {
-            System.err.println("При создании user произошла ошибка!");
+            connection.commit();
+        } catch (SQLException var3) {
+            connection.rollback();
+            throw new RuntimeException(var3);
         }
     }
 
-    public void removeUserById(long id) {
+    public void removeUserById(long id) throws SQLException {
         try {
             Statement statement = connection.createStatement();
             String sql = "DELETE FROM user WHERE id = id";
             statement.executeUpdate(sql);
             System.out.println("User под номером " + id + " успешно удалён");
-        } catch (SQLException e) {
-            System.err.println(" При удалении user произошла ошибка!");
-            e.printStackTrace();
+            connection.commit();
+        } catch (SQLException var4) {
+            connection.rollback();
+            throw new RuntimeException(var4);
         }
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user";
         try {
@@ -80,21 +83,24 @@ public class UserDaoJDBCImpl implements UserDao {
                 users.add(classUser);
             }
             System.out.println(users);
-        } catch (SQLException e) {
-            System.err.println("При получении таблицы произошла ошибка!");
-            e.printStackTrace();
+            connection.commit();
+        } catch (SQLException var5) {
+            connection.rollback();
+            throw new RuntimeException(var5);
         }
         return users;
     }
 
-    public void cleanUsersTable() {
+    public void cleanUsersTable() throws SQLException {
         try {
             Statement statement = connection.createStatement();
             String sql = "TRUNCATE table user";
             statement.executeUpdate(sql);
             System.out.println("Таблица успешно очищена");
-        } catch (SQLException e) {
-            System.err.println("При очищении таблицы users произошла ошибка");
+            connection.commit();
+        } catch (SQLException var6) {
+            connection.rollback();
+            throw new RuntimeException(var6);
         }
     }
 }
