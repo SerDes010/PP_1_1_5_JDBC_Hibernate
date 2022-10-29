@@ -13,6 +13,7 @@ public class Util {
 
 
     private Util() {
+
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             connection.setAutoCommit(false);
