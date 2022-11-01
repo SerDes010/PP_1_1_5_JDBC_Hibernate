@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-       Util.getInstance().getConnection();
+       Util.getConnection();
         UserServiceImpl us = new UserServiceImpl();
         us.createUsersTable();
         User user1 = new User("Nikolay ", "Nikolaev", (byte) 25);
