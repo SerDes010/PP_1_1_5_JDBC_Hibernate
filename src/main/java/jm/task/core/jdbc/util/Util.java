@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public class Util {
     private static Connection connection;
-   // private static volatile Util instance;
     private static final String URL = "jdbc:mysql://localhost:3306/user";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "1Qaz2Wsx3Edc!@#";
@@ -21,7 +20,6 @@ public class Util {
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             connection.setAutoCommit(false);
-            connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
